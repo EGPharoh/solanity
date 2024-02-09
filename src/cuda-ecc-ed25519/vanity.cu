@@ -435,27 +435,28 @@ void __global__ vanity_scan(curandState *state, int *keys_found, int *gpu, int *
 
 				// we got to the end of the prefix pattern, it matched!
 				if (j == (prefix_letter_counts[i] - 1))
-				{
-					bool match = true;
-					for (int g = 1; g < 4; g++)
 					{
-						if (
-							!(
-								(key[j + g] == '1') ||
-								(key[j + g] == '2') ||
-								(key[j + g] == '3') ||
-								(key[j + g] == '4') ||
-								(key[j + g] == '5') ||
-								(key[j + g] == '6') ||
-								(key[j + g] == '7') ||
-								(key[j + g] == '8') ||
-								(key[j + g] == '9')
-							)
-						)
+						bool match = true;
+						for (int g = 1; g <= 4; g++)  // Changed to 4 for checking four numbers
 						{
-							match = false;
+							if (
+								!(
+									(key[j + g] == '1') ||
+									(key[j + g] == '2') ||
+									(key[j + g] == '3') ||
+									(key[j + g] == '4') ||
+									(key[j + g] == '5') ||
+									(key[j + g] == '6') ||
+									(key[j + g] == '7') ||
+									(key[j + g] == '8') ||
+									(key[j + g] == '9')
+								)
+							)
+							{
+								match = false;
+								break;  // Exit loop if not a match
+							}
 						}
-					}
 					if (match)
 					{
 						atomicAdd(keys_found, 1);
