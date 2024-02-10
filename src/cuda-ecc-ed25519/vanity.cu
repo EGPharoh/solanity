@@ -437,7 +437,7 @@ void __global__ vanity_scan(curandState *state, int *keys_found, int *gpu, int *
 				if (j == (prefix_letter_counts[i] - 1))
 					{
 						bool match = true;
-						for (int g = 1; g <= 2; g++)  // Changed to 4 for checking four numbers
+						for (int g = 1; g <= 3; g++)  // Changed to 4 for checking four numbers
 						{
 							if (
 								!(
