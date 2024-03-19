@@ -423,93 +423,45 @@ void __global__ vanity_scan(curandState *state, int *keys_found, int *gpu, int *
 
 		for (int i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
 		{
-
 			for (int j = 0; j < prefix_letter_counts[i]; ++j)
 			{
-
-				// it doesn't match this prefix, no need to continue
+				// It doesn't match this prefix, no need to continue
 				if (!(prefixes[i][j] == '?') && !(prefixes[i][j] == key[j]))
 				{
 					break;
 				}
 
-				// we got to the end of the prefix pattern, it matched!
+				// We got to the end of the prefix pattern, it matched!
 				if (j == (prefix_letter_counts[i] - 1))
+				{
+					atomicAdd(keys_found, 1);
+
+					printf("GPU %d MATCH %s - ", *gpu, key);
+					for (int n = 0; n < sizeof(seed); n++)
 					{
-						bool match = true;
-						for (int g = 1; g <= 3; g++)  // Changed to 4 for checking four numbers
-						{
-							if (
-								!(
-									(key[j + g] == '1') ||
-									(key[j + g] == '2') ||
-									(key[j + g] == '3') ||
-									(key[j + g] == '4') ||
-									(key[j + g] == '5') ||
-									(key[j + g] == '6') ||
-									(key[j + g] == '7') ||
-									(key[j + g] == '8') ||
-									(key[j + g] == '9')
-								)
-							)
-							{
-								match = false;
-								break;  // Exit loop if not a match
-							}
-						}
-					if (match)
-					{
-						atomicAdd(keys_found, 1);
-						// size_t pkeysize = 256;
-						// b58enc(pkey, &pkeysize, seed, 32);
-
-						// SMITH
-						// The 'key' variable is the public key in base58 'address' format
-						// We display the seed in hex
-
-						// Solana stores the keyfile as seed (first 32 bytes)
-						// followed by public key (last 32 bytes)
-						// as an array of decimal numbers in json format
-
-						printf("GPU %d MATCH %s - ", *gpu, key);
-						for (int n = 0; n < sizeof(seed); n++)
-						{
-							printf("%02x", (unsigned char)seed[n]);
-						}
-						printf("\n");
-
-						printf("[");
-						for (int n = 0; n < sizeof(seed); n++)
-						{
-							printf("%d,", (unsigned char)seed[n]);
-						}
-						for (int n = 0; n < sizeof(publick); n++)
-						{
-							if (n + 1 == sizeof(publick))
-							{
-								printf("%d", publick[n]);
-							}
-							else
-							{
-								printf("%d,", publick[n]);
-							}
-						}
-						printf("]\n");
-
-						/*
-						printf("Public: ");
-											for(int n=0; n<sizeof(publick); n++) { printf("%d ",publick[n]); }
-						printf("\n");
-						printf("Private: ");
-											for(int n=0; n<sizeof(privatek); n++) { printf("%d ",privatek[n]); }
-						printf("\n");
-						printf("Seed: ");
-											for(int n=0; n<sizeof(seed); n++) { printf("%d ",seed[n]); }
-						printf("\n");
-											*/
-
-						break;
+						printf("%02x", (unsigned char)seed[n]);
 					}
+					printf("\n");
+
+					printf("[");
+					for (int n = 0; n < sizeof(seed); n++)
+					{
+						printf("%d,", (unsigned char)seed[n]);
+					}
+					for (int n = 0; n < sizeof(publick); n++)
+					{
+						if (n + 1 == sizeof(publick))
+						{
+							printf("%d", publick[n]);
+						}
+						else
+						{
+							printf("%d,", publick[n]);
+						}
+					}
+					printf("]\n");
+
+					break; // Break as soon as a match is found
 				}
 			}
 		}
