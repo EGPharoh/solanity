@@ -247,14 +247,8 @@ void __global__ vanity_scan(curandState *state, int *keys_found, int *gpu, int *
 	int prefix_letter_counts[MAX_PATTERNS];
 	for (unsigned int n = 0; n < sizeof(prefixes) / sizeof(prefixes[0]); ++n)
 	{
-		if (MAX_PATTERNS == n)
-		{
-			printf("NEVER SPEAK TO ME OR MY SON AGAIN");
-			return;
-		}
 		int letter_count = 0;
-		for (; prefixes[n][letter_count] != 0; letter_count++)
-			;
+		for (; prefixes[n][letter_count] != 0; letter_count++);
 		prefix_letter_counts[n] = letter_count;
 	}
 
