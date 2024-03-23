@@ -16,6 +16,8 @@ __device__ static char const *prefixes[] = {
   "MINTECH",
   "PASTEL",
   "pastel",
+  "mintechpastel",
+  "MTCHxPSTL"
 };
 
 #endif
